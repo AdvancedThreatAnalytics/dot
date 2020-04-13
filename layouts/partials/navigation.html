@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-md {{ if .IsHome }}navbar-dark{{ else }}navbar-light{{ end }}">
+<nav class="navbar navbar-expand-md navbar-dark">
   <div class="container">
-    <a class="navbar-brand px-2" href="{{ .Site.BaseURL | relLangURL }}">
+    <a class="navbar-brand px-2" href="{{ .Site.Params.logoURL }}">
       {{ $logo:= .Site.Params.logo }}
       {{ $logoWhite:= .Site.Params.logo_white }}
       {{ if (or $logo $logoWhite) }}
