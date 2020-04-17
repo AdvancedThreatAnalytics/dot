@@ -17,22 +17,30 @@
       </div>
       <div class="col-lg-9">
         <div class="p-lg-5 p-4 bg-white">
-          <h2 class="mb-5">{{ .Title }}</h2>
           {{ if .Content }}
+          <h2 class="mb-5">{{ .Title }}</h2>
           <div class="content">{{.Content}}</div>
-          {{ else }}
-          <div class="bg-light p-4">
-            <ul class="page-list">
-              {{ template "section-tree-nav" dict "sect" . "currentnode" $currentNode }}
-            </ul>
+          {{ else if .IsSection }}
+          <div class="content">
+            {{ $mysection := .CurrentSection.Pages }}
+            {{ range first 1 $mysection }}
+              <h2 class="mb-5">{{ .Title }}</h2>
+              {{ .Content }}
+              {{ end }}
+              {{ range first 2 $mysection }}
+              {{$.Scratch.Set "nextPage" .}}
+              {{end}}
+            {{ else }}
+              <h2 class="mb-5">{{ .Title }}</h2>
           </div>
           {{ end }}
           <p class="post-meta border-bottom pb-3 mb-0 mt-3">Updated on {{ .Lastmod.Format "02 Jan 2006" }}</p>
           <nav class="pagination mt-3">
             <!-- Next prev page -->
             {{ $currentNode := . }}
-            {{ template "menu-nextprev" dict "menu" .Site.Home "currentnode" $currentNode }}
+            {{ template "menu-nextprev" dict "menu" .Site.Home "currentnode" $currentNode "hasNext" ($.Scratch.Get "nextPage") }}
             {{ define "menu-nextprev" }}
+            {{if (not .hasNext)}}
             {{$currentNode := .currentnode }}
             {{ if ne .menu.Params.hidden true}}
             {{if hasPrefix $currentNode.Permalink .menu.Permalink }}
@@ -59,6 +67,7 @@
             {{end}}
             {{ end }}
             {{ end }}
+            {{end}}
 
             {{with ($.Scratch.Get "prevPage")}}
             <a class="nav nav-prev" href="{{.Permalink }}"><i class="ti-arrow-left mr-2"></i> <span class="d-none d-md-block">{{.Title}}</span></a>
