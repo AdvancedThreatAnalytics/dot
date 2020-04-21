@@ -127,4 +127,8 @@
     $(this).removeClass('active')
   })
 
+  $('li.sidelist i.nav-dropdown').click(function(){
+    $(this).toggleClass('ti-arrow-down ti-arrow-right');
+  });
+
 })(jQuery);

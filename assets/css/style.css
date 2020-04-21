@@ -771,7 +771,7 @@ tbody {
 li.sidelist>a {
   margin-left: 20px;
   margin-bottom: 10px;
-  display: block;
+  /* display: block; */
 }
 
 li.sidelist li a {
@@ -780,10 +780,15 @@ li.sidelist li a {
 
 .sidelist li.sidelist {
   display: block;
+  white-space: nowrap;
 }
 
 .sidelist li.sidelist.active a {
   color: var(--primary-color);
+}
+
+.sidelist i.nav-dropdown {
+  vertical-align: middle;
 }
 
 .page-list li a {
@@ -796,7 +801,7 @@ li.sidelist li a {
 
 .sidelist li a {
   color: var(--text-color-dark);
-  display: block;
+  display: inline-block;
   font-size: 15px;
   font-weight: 500;
   padding: 10px 0;

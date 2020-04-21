@@ -9,7 +9,7 @@
             <a class="d-block h4 back-btn" href="{{ .Site.BaseURL | relLangURL }}">{{ i18n "Back-home"}}</a>
             {{range .Site.Home.Sections.ByWeight}}
               {{ if eq .FirstSection $currentNode.FirstSection }} {{/* print current section only */}}
-              {{ template "section-tree-nav" dict "sect" . "currentnode" $currentNode}}
+              {{ template "section-tree-nav" dict "sect" . "currentnode" $currentNode "unfoldable" true}}
               {{ end }}
             {{ end }}
           </ul>
@@ -87,6 +87,7 @@
 {{ define "section-tree-nav" }}
 {{ $showvisitedlinks := .showvisitedlinks }}
 {{ $currentNode := .currentnode }}
+{{ $unfoldable := .unfoldable }}
 {{with .sect}}
 {{safeHTML .Params.head}}
 {{ $fileUniqueID := "" }}
@@ -95,20 +96,23 @@
 {{ with $currentNode.File }}{{ $currentNodeFileUniqueID = .UniqueID }}{{ end }}
 <li data-nav-id="{{.Permalink}}" title="{{.Title}}" class="sidelist
   {{if eq $fileUniqueID $currentNodeFileUniqueID}}active{{end}}">
-  <a href="{{.Permalink}}">
-    {{safeHTML .Params.Pre}}{{or .Params.menuTitle .LinkTitle .Title}}{{safeHTML .Params.Post}}
-  </a>
   {{ $numberOfPages := (add (len .Pages) (len .Sections)) }}
-  {{ if ne $numberOfPages 0 }}
-    <ul>
+  {{ if and (not $unfoldable) (ne $numberOfPages 0) }}
+  <i class="ti-arrow-{{if hasPrefix $currentNode.Permalink .Permalink }}down{{else}}right{{end}} nav-dropdown" data-toggle="collapse" data-target="#{{ .Title | md5 }}"></i>
+  {{ end }}
+    <a href="{{.Permalink}}">
+      {{safeHTML .Params.Pre}}{{or .Params.menuTitle .LinkTitle .Title}}{{safeHTML .Params.Post}}
+    </a>
+    {{ if (ne $numberOfPages 0) }}
+    <ul id="{{ .Title | md5 }}" class="collapse {{if hasPrefix $currentNode.Permalink .Permalink }}show{{end}}">
       {{ range .Pages.ByWeight }}
-        {{ if and .Params.hidden (not $.showhidden) }}
-        {{else}}
-          {{ template "section-tree-nav" dict "sect" . "currentnode" $currentNode }}
-        {{end}}
+      {{ if and .Params.hidden (not $.showhidden) }}
+      {{else}}
+      {{ template "section-tree-nav" dict "sect" . "currentnode" $currentNode }}
+      {{end}}
       {{end}}
     </ul>
-  {{ end }}
-</li>
+    {{ end }}
+  </li>
 {{ end }}
 {{ end }}
